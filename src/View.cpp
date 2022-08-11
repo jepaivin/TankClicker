@@ -85,11 +85,17 @@ void View::Draw(const Game& GameInstance)
 	// Draw background
 
 	DrawBackground(GameInstance.GetDangerLevel());
-
+	
 	// Draw enemies
 
 	for (int i = 0; i < GameInstance.NumEnemies; i++)
 	{
+		if (GameInstance.Enemies[i].Pos.X > BufferWidth || GameInstance.Enemies[i].Pos.Y > BufferHeight)
+		{
+			// Tank is off screen
+			continue;
+		}
+
 		if (GameInstance.Enemies[i].InRange)
 		{
 			DrawTank(DC, GameInstance.Enemies[i].Pos, GameInstance.Enemies[i].Angle, Brush_EnemyInRange);
@@ -135,6 +141,7 @@ void View::DrawTank(HDC DC, Vector2 Pos, float Angle, HBRUSH Brush)
 	int Size = 12;
 
 	SetRect(&Rect, X - Size, Y - Size, X + Size, Y + Size);
+	
 	FillRect(DC, &Rect, Brush);
 	
 	Vector2 LineEnd;
