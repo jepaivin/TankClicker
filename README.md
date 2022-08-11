@@ -10,7 +10,7 @@ This is the main application with application initialization and shutdown, Windo
 
 ### Game
 
-Game state (player and enemy positions) and tick function to update current state
+Game state and logic, including player and enemy positions and a tick function to update current state
 
 ### View
 
