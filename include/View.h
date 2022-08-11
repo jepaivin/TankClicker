@@ -14,6 +14,7 @@ public:
 
 private:
 	void DrawBackground(float DangerLevel);
+	void FillBackgroundBuffer(unsigned int Color);
 
 	void DrawCircle(HDC DC, Vector2 Pos, int Radius, HBRUSH Brush);
 	void DrawTank(HDC DC, Vector2 Pos, float Angle, HBRUSH Brush);

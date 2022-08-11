@@ -16,17 +16,7 @@ public:
 	void OnMouseDown(POINT Point, EMouseButton Button);
 	void OnMouseUp(POINT Point, EMouseButton Button);	
 
-	Vector2 GetEnemyPosition(int EnemyIndex)
-	{
-		for (int i = 0; i < NumEnemies; i++)
-		{
-			if (i == EnemyIndex)
-			{
-				return Enemies[i].Pos;
-			}
-		}
-		return Vector2();
-	}
+	Vector2 GetEnemyPosition(int EnemyIndex);	
 
 	// Calculate a "danger level" for UI based on how many enemies are within range
 	double GetDangerLevel() const;

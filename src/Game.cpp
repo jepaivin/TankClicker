@@ -29,6 +29,17 @@ void Game::Shutdown()
 	CloseHandle(Mutex);
 }
 
+Vector2 Game::GetEnemyPosition(int EnemyIndex)
+{
+	for (int i = 0; i < NumEnemies; i++)
+	{
+		if (i == EnemyIndex)
+		{
+			return Enemies[i].Pos;
+		}
+	}
+	return Vector2();
+}
 
 double Game::GetDangerLevel() const
 {
@@ -68,7 +79,6 @@ void Game::UpdateEnemiesInRange()
 		Enemies[i].InRange = Distance < MaxRange;
 	}
 	ReleaseMutex();
-
 }
 
 void Game::Tick(float DeltaTime)

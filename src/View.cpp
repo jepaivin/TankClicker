@@ -47,18 +47,21 @@ void View::OnWindowChanged(HWND Window)
 	SelectObject(BufferDC, BufferBitmap);
 }
 
-void View::DrawBackground(float DangerLevel)
-{	
-	unsigned int Color = 0x7baf80 + ((int)(DangerLevel * 48) << 8);
-	
+void View::FillBackgroundBuffer(unsigned int Color)
+{
 	for (int y = 0; y < BufferHeight; y++)
-	{	
+	{
 		for (int x = 0; x < BufferWidth; x++)
 		{
 			BackgroundBytes[y * BufferWidth + x] = Color;
 		}
 	}
-	
+
+}
+void View::DrawBackground(float DangerLevel)
+{	
+	unsigned int Color = 0x7baf80 + ((int)(DangerLevel * 48) << 8);
+	FillBackgroundBuffer(Color);	
 
 	BITMAPINFO info;
 	ZeroMemory(&info, sizeof(BITMAPINFO));
