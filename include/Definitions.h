@@ -9,11 +9,13 @@ enum EMouseButton
 	Right
 };
 
-#define MAP_WIDTH 4096
+#define MAP_WIDTH 8192
 #define MAP_HEIGHT 4096
 
-extern int MainFrameCount;
-extern int AIWorkerFrameCount;
+extern int MainThread_FrameCount;
+extern int AIThread_FrameCount;
+extern int MainThread_FPS;
+extern int AIThread_FPS;
 
 struct Vector2
 {

@@ -100,14 +100,14 @@ void View::DrawTank(HDC DC, Vector2 Pos, float Angle, HBRUSH Brush)
 	int X = (int)Pos.X;
 	int Y = (int)Pos.Y;
 	
-	int Size = 16;
+	int Size = 12;
 
 	SetRect(&Rect, X - Size, Y - Size, X + Size, Y + Size);
 	FillRect(DC, &Rect, Brush);
 	
 	Vector2 LineEnd;
-	LineEnd.X = Pos.X + cos(Angle) * 25;
-	LineEnd.Y = Pos.Y + sin(Angle) * 25;
+	LineEnd.X = Pos.X + cos(Angle) * 20;
+	LineEnd.Y = Pos.Y + sin(Angle) * 20;
 	
 	SelectObject(DC, Pen_Tank_Gun);
 

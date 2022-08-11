@@ -3,10 +3,6 @@
 #include "Game.h"
 #include "Settings.h"
 
-int MainFrameCount = 0;
-int AIWorkerFrameCount = 0;
-
-
 void Game::Initialize()
 {
 	NumEnemies = GetSettings().NumEnemies;

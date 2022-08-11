@@ -847,4 +847,4 @@ PlayerMaxRange 200
 EnemySpeed 10
 BulletSpeed 100
 EnemyBulletSpeed 100
-NumEnemies 2000
+NumEnemies 4000

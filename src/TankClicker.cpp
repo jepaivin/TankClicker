@@ -16,10 +16,13 @@ WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 Game GameInstance;
 View ViewInstance;
 
-float LastFPS = 0;
-
 UINT_PTR TIMER_REPAINT = 1;
-UINT_PTR TIMER_DEBUGTEXT = 2;
+UINT_PTR TIMER_UPDATEFPS = 2;
+
+int MainThread_FrameCount = 0;
+int AIThread_FrameCount = 0;
+int MainThread_FPS = 0;
+int AIThread_FPS = 0;
 
 DWORD LastTickCount = GetTickCount();
 
@@ -58,7 +61,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     // Main message loop:
     while (true)
 	{
-        GameInstance.LockMutex();
 
         if (PeekMessage(&msg, nullptr, 0, 0, 0))
         {
@@ -72,13 +74,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			{
 				TranslateMessage(&msg);
 				DispatchMessage(&msg);
-			}
-            
-        }
-        
-		TickApplication();
+			}            
+        }        
 
-        GameInstance.ReleaseMutex();
+		TickApplication();
     }
     
     GameInstance.Shutdown();
@@ -146,7 +145,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    ViewInstance.OnWindowChanged(hWnd);
    
    SetTimer(hWnd, TIMER_REPAINT, 10, (TIMERPROC)nullptr);
-   SetTimer(hWnd, TIMER_DEBUGTEXT, 1000, (TIMERPROC)nullptr);
+   SetTimer(hWnd, TIMER_UPDATEFPS, 1000, (TIMERPROC)nullptr);
 
    return TRUE;
 }
@@ -157,11 +156,9 @@ void TickApplication()
     
     DWORD DeltaTicks = Ticks - LastTickCount;
 
-    GameInstance.Tick(DeltaTicks / 1000.0f);    
-    ViewInstance.Draw(GameInstance);
-
+    GameInstance.Tick(DeltaTicks / 1000.0f);
 	LastTickCount = Ticks;
-    MainFrameCount++;
+    MainThread_FrameCount++;
 }
 //
 //  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
@@ -235,14 +232,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             // Refresh screen
             InvalidateRect(hWnd, nullptr, false);
         }
-        else if (wParam == TIMER_DEBUGTEXT)
-        {
-			char Title[256];
-			sprintf_s<256>(Title, "%d / %d FPS", MainFrameCount, AIWorkerFrameCount);
-            SetWindowText(hWnd, CA2CT(Title));
-            
-            AIWorkerFrameCount = 0;
-            MainFrameCount = 0;
+        else if (wParam == TIMER_UPDATEFPS)
+        {           
+            MainThread_FPS = MainThread_FrameCount;
+            AIThread_FPS = AIThread_FrameCount;
+            AIThread_FrameCount = 0;
+            MainThread_FrameCount = 0;
         }
         break;
 
@@ -254,11 +249,30 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
 
     case WM_PAINT:
-        {            
+        {
+		    GameInstance.LockMutex();
+		
+            ViewInstance.Draw(GameInstance);
+
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
-            ViewInstance.SwapBuffers(hdc);            
+            ViewInstance.SwapBuffers(hdc);    
+            
+            SetBkMode(hdc, TRANSPARENT);
+            SelectObject(hdc, GetStockObject(SYSTEM_FIXED_FONT));
+            SetTextColor(hdc, RGB(255,255,255));
+
+			char DebugText[256];
+			sprintf_s<256>(DebugText, "Main Thread: %d FPS", MainThread_FPS);
+            TextOut(hdc, 10, 10, CA2CT(DebugText), strlen(DebugText));
+            
+            sprintf_s<256>(DebugText, "AI Thread:   %d FPS", AIThread_FPS);
+            TextOut(hdc, 10, 30, CA2CT(DebugText), strlen(DebugText));
+			//SetWindowText(hWnd, CA2CT(Title));
+
             EndPaint(hWnd, &ps);
+            
+            GameInstance.ReleaseMutex();
         }
         break;
 

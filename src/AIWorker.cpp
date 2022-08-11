@@ -22,11 +22,11 @@ void AIWorker::RunThread()
 	{
 		Vector2 PlayerPos = GameInstance->Player.Pos;
 
-		// Lock mutex since we're accessing enemies data on thread
-		GameInstance->LockMutex();
-
 		for (int i = 0; i < GameInstance->NumEnemies; i++)
 		{
+			// Lock mutex since we're accessing enemies data on thread
+			GameInstance->LockMutex();
+
 			if (GameInstance->Enemies[i].InRange)
 			{
 				// Calculate angle from enemy to player
@@ -38,12 +38,12 @@ void AIWorker::RunThread()
 
 				GameInstance->Enemies[i].Angle = (float)ToPlayer.Angle();
 			}
-		}
-		
-		// Release data mutex
-		GameInstance->ReleaseMutex();
 
-		AIWorkerFrameCount++;
+			// Release data mutex
+			GameInstance->ReleaseMutex();
+		}
+
+		AIThread_FrameCount++;
 	}
 }
 
