@@ -81,6 +81,7 @@
     <LinkIncremental>true</LinkIncremental>
     <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
     <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>

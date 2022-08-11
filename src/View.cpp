@@ -110,6 +110,7 @@ void View::DrawTank(HDC DC, Vector2 Pos, float Angle, HBRUSH Brush)
 	LineEnd.Y = Pos.Y + sin(Angle) * 25;
 	
 	SelectObject(DC, Pen_Tank_Gun);
-	MoveToEx(DC, Pos.X, Pos.Y, nullptr);
-	LineTo(DC, LineEnd.X, LineEnd.Y);
+
+	MoveToEx(DC, (int)Pos.X, (int)Pos.Y, nullptr);
+	LineTo(DC, (int)LineEnd.X, (int)LineEnd.Y);
 }
