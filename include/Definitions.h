@@ -80,5 +80,6 @@ struct TankData
 {
 	Vector2 Pos;
 	float Angle;
+	float DistanceToPlayer;
 	bool InRange;
 };

@@ -15,7 +15,6 @@ void View::Initialize()
 	Brush_White = CreateSolidBrush(RGB(255, 255, 255));	
 	Pen_Tank_Gun = CreatePen(0, 4, RGB(0,0,0));
 	Pen_Click_Indicator = CreatePen(0, 1, RGB(255, 255, 255));	
-
 }
 
 void View::OnWindowChanged(HWND Window)
@@ -30,6 +29,11 @@ void View::OnWindowChanged(HWND Window)
 	{
 		DeleteObject(BufferBitmap);
 	}
+	if (BackgroundBytes != nullptr)
+	{
+		delete[] BackgroundBytes;
+	}
+
 	HDC WindowDC = GetDC(Window);
 	BufferDC = CreateCompatibleDC(WindowDC);
 
@@ -38,8 +42,35 @@ void View::OnWindowChanged(HWND Window)
 	BufferWidth = Rect.right - Rect.left;
 	BufferHeight = Rect.bottom - Rect.top;
 
+	BackgroundBytes = new unsigned int[BufferWidth * BufferHeight];
 	BufferBitmap = CreateCompatibleBitmap(WindowDC, BufferWidth, BufferHeight);
 	SelectObject(BufferDC, BufferBitmap);
+}
+
+void View::DrawBackground(float DangerLevel)
+{	
+	unsigned int Color = 0x7baf80 + ((int)(DangerLevel * 48) << 8);
+	
+	for (int y = 0; y < BufferHeight; y++)
+	{	
+		for (int x = 0; x < BufferWidth; x++)
+		{
+			BackgroundBytes[y * BufferWidth + x] = Color;
+		}
+	}
+	
+
+	BITMAPINFO info;
+	ZeroMemory(&info, sizeof(BITMAPINFO));
+	info.bmiHeader.biBitCount = 32;
+	info.bmiHeader.biWidth = BufferWidth;
+	info.bmiHeader.biHeight = BufferHeight;
+	info.bmiHeader.biPlanes = 1;
+	info.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+	info.bmiHeader.biSizeImage = BufferWidth * BufferHeight;
+	info.bmiHeader.biCompression = BI_RGB;
+
+	StretchDIBits(BufferDC, 0, 0, BufferWidth, BufferHeight, 0, 0, BufferWidth, BufferHeight, BackgroundBytes, &info, DIB_RGB_COLORS, SRCCOPY);
 }
 
 void View::Draw(const Game& GameInstance)
@@ -50,10 +81,8 @@ void View::Draw(const Game& GameInstance)
 
 	// Draw background
 
-	RECT BackgroundRect;
-	SetRect(&BackgroundRect, 0, 0, BufferWidth, BufferHeight);
-	FillRect(DC, &BackgroundRect, Brush_Background);
-	
+	DrawBackground(GameInstance.GetDangerLevel());
+
 	// Draw enemies
 
 	for (int i = 0; i < GameInstance.NumEnemies; i++)

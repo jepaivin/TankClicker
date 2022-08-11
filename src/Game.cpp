@@ -18,7 +18,6 @@ void Game::Initialize()
 	Player.Pos.X = 500;
 	Player.Pos.Y = 500;
 
-
 	AIWorker.Initialize(this);
 	Mutex = CreateMutex(nullptr, false, L"GameDataMutex");
 }
@@ -28,6 +27,30 @@ void Game::Shutdown()
 	AIWorker.Shutdown();
 
 	CloseHandle(Mutex);
+}
+
+
+double Game::GetDangerLevel() const
+{
+	double Dist = GetDistanceToNearestEnemy();
+
+	double Result = (100 - Dist) / 100.0;
+
+	return Result < 0 ? 0 : Result > 1 ? 1 : Result;
+}
+
+double Game::GetDistanceToNearestEnemy() const
+{
+	double Result = 10000;
+
+	for (int i = 0; i < NumEnemies; i++)
+	{
+		if (Enemies[i].DistanceToPlayer < Result)
+		{
+			Result = Enemies[i].DistanceToPlayer;
+		}
+	}
+	return Result;
 }
 
 
@@ -41,6 +64,7 @@ void Game::UpdateEnemiesInRange()
 	{
 		double Distance = (GetEnemyPosition(i) - Player.Pos).Length();
 		
+		Enemies[i].DistanceToPlayer = Distance;
 		Enemies[i].InRange = Distance < MaxRange;
 	}
 	ReleaseMutex();

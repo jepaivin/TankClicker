@@ -27,6 +27,11 @@ public:
 		}
 		return Vector2();
 	}
+
+	// Calculate a "danger level" for UI based on how many enemies are within range
+	double GetDangerLevel() const;
+	
+	double GetDistanceToNearestEnemy() const;
 	
 	void UpdateEnemiesInRange();
 

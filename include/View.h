@@ -13,6 +13,7 @@ public:
 	void OnWindowChanged(HWND Window);
 
 private:
+	void DrawBackground(float DangerLevel);
 
 	void DrawCircle(HDC DC, Vector2 Pos, int Radius, HBRUSH Brush);
 	void DrawTank(HDC DC, Vector2 Pos, float Angle, HBRUSH Brush);
@@ -22,6 +23,9 @@ private:
 	HBITMAP BufferBitmap = nullptr;
 	int BufferWidth;
 	int BufferHeight;
+	
+	unsigned int* BackgroundBytes = nullptr;
+
 
 	HBRUSH Brush_Background;
 	HBRUSH Brush_Player;
