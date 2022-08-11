@@ -1,1 +1,1 @@
-"# TankClicker" 
+Win32/C++ example application where you drive your tank around in a world full of enemy tanks. Tanks within 200 units will start tracking you with their gun. Performance is not that great, can you find out why?
